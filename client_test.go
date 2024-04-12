@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func Test_tzkt_GetDelegate(t *testing.T) {
@@ -39,7 +40,7 @@ func Test_tzkt_GetDelegate(t *testing.T) {
 			if got, want := delegates[0].Delegator, tt.wantSender; got != want {
 				t.Errorf("got %v, want %v", got, want)
 			}
-			if got, want := delegates[0].Timestamp, tt.wantTimestamp; got != want {
+			if got, want := delegates[0].Timestamp.Format(time.RFC3339), tt.wantTimestamp; got != want {
 				t.Errorf("got %v, want %v", got, want)
 			}
 			if got, want := delegates[0].Amount, tt.wantAmount; got != want {

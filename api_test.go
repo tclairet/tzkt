@@ -18,14 +18,14 @@ func TestAPI_delegations(t *testing.T) {
 	}{
 		{
 			name:    "retrieve all",
-			toStore: []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}},
-			want:    DelegationsResponse{[]Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}}},
+			toStore: []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
+			want:    DelegationsResponse{[]Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}}},
 		},
 		{
 			name:    "filter by year",
 			year:    "2020",
-			toStore: []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}},
-			want:    DelegationsResponse{[]Delegate{{Timestamp: "2020-01-01T01:01:01Z"}}},
+			toStore: []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
+			want:    DelegationsResponse{[]Delegate{{Timestamp: timestamp2020}}},
 		},
 	}
 	for _, tt := range tests {

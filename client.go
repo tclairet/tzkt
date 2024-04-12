@@ -34,7 +34,7 @@ func (sdk *tzkt) GetDelegate(block int64) ([]Delegate, error) {
 			Amount:    fmt.Sprintf("%d", resp[i].Amount),
 			Delegator: resp[i].Sender.Address,
 			Block:     fmt.Sprintf("%d", resp[i].Level),
-			Timestamp: resp[i].Timestamp.Format(time.RFC3339),
+			Timestamp: resp[i].Timestamp,
 		}
 	}
 
@@ -62,10 +62,10 @@ func (sdk *tzkt) GetBlocksCount() (int64, error) {
 }
 
 type Delegate struct {
-	Amount    string `json:"amount"`
-	Delegator string `json:"delegator"`
-	Block     string `json:"block"`
-	Timestamp string `json:"timestamp"`
+	Amount    string    `json:"amount"`
+	Delegator string    `json:"delegator"`
+	Block     string    `json:"block"`
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type GetDelegateResponse struct {

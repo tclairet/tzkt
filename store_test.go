@@ -3,7 +3,11 @@ package main
 import (
 	"reflect"
 	"testing"
+	"time"
 )
+
+var timestamp2020, _ = time.Parse(time.RFC3339, "2020-01-01T01:01:01Z")
+var timestamp2024, _ = time.Parse(time.RFC3339, "2024-01-01T01:01:01Z")
 
 func Test_Store(t *testing.T) {
 	testsStore := []struct {
@@ -37,19 +41,19 @@ func Test_Store(t *testing.T) {
 			}{
 				{
 					name:    "already ordered",
-					toStore: []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}},
-					want:    []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}},
+					toStore: []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
+					want:    []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
 				},
 				{
 					name:    "sort",
-					toStore: []Delegate{{Timestamp: "2024-01-01T00:00:00Z"}, {Timestamp: "2020-01-01T00:00:00Z"}},
-					want:    []Delegate{{Timestamp: "2020-01-01T00:00:00Z"}, {Timestamp: "2024-01-01T00:00:00Z"}},
+					toStore: []Delegate{{Timestamp: timestamp2024}, {Timestamp: timestamp2020}},
+					want:    []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
 				},
 				{
 					name:    "filter by year",
 					year:    address(2020),
-					toStore: []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}, {Timestamp: "2024-01-01T01:01:01Z"}},
-					want:    []Delegate{{Timestamp: "2020-01-01T01:01:01Z"}},
+					toStore: []Delegate{{Timestamp: timestamp2020}, {Timestamp: timestamp2024}},
+					want:    []Delegate{{Timestamp: timestamp2020}},
 				},
 			}
 			for _, tt := range tests {

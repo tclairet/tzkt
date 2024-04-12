@@ -57,14 +57,11 @@ func (m mem) Delegates(year *int) ([]Delegate, error) {
 	}
 	if year != nil {
 		delegates = slices.DeleteFunc(delegates, func(delegate Delegate) bool {
-			t, _ := time.Parse(time.RFC3339, delegate.Timestamp)
-			return *year != t.Year()
+			return *year != delegate.Timestamp.Year()
 		})
 	}
 	slices.SortFunc(delegates, func(a, b Delegate) int {
-		aTime, _ := time.Parse(time.RFC3339, a.Timestamp)
-		bTime, _ := time.Parse(time.RFC3339, b.Timestamp)
-		return aTime.Compare(bTime)
+		return a.Timestamp.Compare(b.Timestamp)
 	})
 	return delegates, nil
 }
@@ -137,9 +134,7 @@ func (s *Badger) Delegates(year *int) ([]Delegate, error) {
 	}
 
 	slices.SortFunc(delegates, func(a, b Delegate) int {
-		aTime, _ := time.Parse(time.RFC3339, a.Timestamp)
-		bTime, _ := time.Parse(time.RFC3339, b.Timestamp)
-		return aTime.Compare(bTime)
+		return a.Timestamp.Compare(b.Timestamp)
 	})
 	return delegates, nil
 }
@@ -204,5 +199,5 @@ func (s *Badger) read(prefix string) (map[string][]byte, error) {
 }
 
 func key(d Delegate) string {
-	return "delegates" + d.Timestamp
+	return "delegates" + d.Timestamp.Format(time.RFC3339)
 }
