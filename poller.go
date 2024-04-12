@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync/atomic"
 	"time"
 )
 
@@ -23,7 +24,9 @@ type poller struct {
 	startBlock int64
 	store      store
 
-	stop chan struct{}
+	isPolling atomic.Bool
+	started   atomic.Bool
+	stop      chan struct{}
 }
 
 func newPoller(client client, frequency time.Duration, startBlock int64, store store) *poller {
@@ -36,10 +39,12 @@ func newPoller(client client, frequency time.Duration, startBlock int64, store s
 }
 
 func (p *poller) Start() error {
-	if p.stop != nil {
+	if p.started.Load() {
 		return fmt.Errorf("poller already started")
 	}
-	p.stop = make(chan struct{})
+	p.started.Store(true)
+	stop := make(chan struct{})
+	p.stop = stop
 	go func() {
 		ticker := time.NewTicker(p.frequency)
 		for {
@@ -48,7 +53,7 @@ func (p *poller) Start() error {
 				if err := p.poll(); err != nil {
 					logger.Error("cannot poll", "error", err.Error())
 				}
-			case <-p.stop:
+			case <-stop:
 				ticker.Stop()
 				return
 			}
@@ -58,11 +63,11 @@ func (p *poller) Start() error {
 }
 
 func (p *poller) Stop() error {
-	if p.stop == nil {
+	if !p.started.Load() {
 		return fmt.Errorf("cannot stop, poller not started")
 	}
+	p.started.Store(false)
 	close(p.stop)
-	p.stop = nil
 	return nil
 }
 
@@ -78,6 +83,13 @@ func (p *poller) lastBlock() (int64, error) {
 }
 
 func (p *poller) poll() error {
+	if p.isPolling.Load() {
+		logger.Warn("polling skipped")
+		return nil
+	}
+	p.isPolling.Store(true)
+	defer p.isPolling.Store(false)
+
 	lastBlockStored, err := p.lastBlock()
 	if err != nil {
 		return err

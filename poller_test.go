@@ -10,6 +10,18 @@ func Test_pollerStartStop(t *testing.T) {
 	if err := poller.Start(); err != nil {
 		t.Fatal(err)
 	}
+	if err := poller.Start(); err == nil {
+		t.Fatal("expect an error but no error was returned")
+	}
+	if err := poller.Stop(); err != nil {
+		t.Fatal(err)
+	}
+	if err := poller.Stop(); err == nil {
+		t.Fatal("expect an error but no error was returned")
+	}
+	if err := poller.Start(); err != nil {
+		t.Fatal(err)
+	}
 	if err := poller.Stop(); err != nil {
 		t.Fatal(err)
 	}
