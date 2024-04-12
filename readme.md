@@ -36,33 +36,3 @@ The response format is as follows. It sorted from the newest to the oldest.
   ]
 }
 ```
-
-
-In this exercise, you will build a Golang service that gathers new [delegations](https://opentezos.com/node-baking/baking/delegating/) made on the Tezos protocol and exposes them through a public API.
-
-## Requirements:
-
-- The service will poll the new delegations from this Tzkt API endpoint: https://api.tzkt.io/#operation/Operations_GetDelegations
-- The data aggregation service must store the delegation data in a store of your choice.
-- The API must read data from that store.
-- For each delegation, save the following information: sender's address, timestamp, amount, and block.
-- Expose the collected data through a public API at the endpoint `/xtz/delegations`.
-    - The expected response format is:
-```json
-{
-   "data":[
-      {
-         "timestamp":"2022-05-05T06:29:14Z",
-         "amount":"125896",
-         "delegator":"tz1a1SAaXRt9yoGMx29rh9FsBF4UzmvojdTL",
-         "block":"2338084"
-      },
-      {
-         "timestamp":"2021-05-07T14:48:07Z",
-         "amount":"9856354",
-         "delegator":"KT1JejNYjmQYh8yw95u5kfQDRuxJcaUPjUnf",
-         "block":"1461334"
-      }
-   ]
-}
-```
